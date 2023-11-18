@@ -10,8 +10,8 @@ import (
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
+  w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	w.Header().Set("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(v)
 }
 
@@ -65,13 +65,14 @@ func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
-
-func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
   account := NewAccount("Eduardo", "de Carvalho")
 
   return WriteJSON(w, http.StatusOK, account)
+}
+
+func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
+
+  return nil
 }
 
 func (s *APIServer) handleUpdateAccount(w http.ResponseWriter, r *http.Request) error {
