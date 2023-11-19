@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -12,6 +13,7 @@ type Account struct {
 	LastName  string
 	Number    int
 	Balance   int
+  CreatedAt time.Time
 }
 
 func NewAccount(firstName, lastName string) *Account {
@@ -20,6 +22,6 @@ func NewAccount(firstName, lastName string) *Account {
 		FirstName: firstName,
 		LastName:  lastName,
 		Number:    rand.Intn(100000),
-		Balance:   0,
+    CreatedAt: time.Now().UTC(),
 	}
 }

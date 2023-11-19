@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/lib/pq"
 )
@@ -50,8 +51,19 @@ func (s *PostgresStore) CreateAccountTable() error {
 	return err
 }
 
-func (s *PostgresStore) CreateAccount(*Account) error {
-	return nil
+func (s *PostgresStore) CreateAccount(acc *Account) error {
+	query := `inset into ACCOUNT
+  (id, first_name, last_name, balance, number, created_at)
+  values
+  ($1, $2, $3, $4, $5, $6);
+  `
+
+  resp, err := s.db.Query(query, 
+    acc.ID, acc.FirstName, acc.LastName, acc.Balance, acc.Number, acc.CreatedAt)
+
+	fmt.Println(resp)
+
+	return err
 }
 
 func (s *PostgresStore) UpdateAccount(*Account) error {
