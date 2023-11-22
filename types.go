@@ -3,9 +3,13 @@ package main
 import (
 	"math/rand"
 	"time"
-
-	"github.com/google/uuid"
 )
+
+type TransferRequest struct {
+  FromAccount int `json:"toAccount"`  
+  ToAccount   int `json:"fromAccount"`
+  Amount      int `json:"amount"`
+}
 
 type CreateAccountRequest struct {
   FirstName string  `json:"firstName"`
@@ -13,7 +17,7 @@ type CreateAccountRequest struct {
 }
 
 type Account struct {
-  ID        uuid.UUID `json:"id"`
+  ID        int      `json:"id"`
   FirstName string    `json:"firstName"`
   LastName  string    `json:"lastName"`
   Number    int       `json:"number"`
@@ -23,7 +27,6 @@ type Account struct {
 
 func NewAccount(firstName, lastName string) *Account {
 	return &Account{
-		ID:        uuid.New(),
 		FirstName: firstName,
 		LastName:  lastName,
 		Number:    rand.Intn(100000),
