@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -25,8 +24,6 @@ func (s *APIServer) Run() {
 	router := mux.NewRouter()
 	router.HandleFunc("/account", makeHTTPHandleFunc(s.handleAccount))
   router.HandleFunc("/account/{id}", makeHTTPHandleFunc(s.handleGetAccountById))
-
-	log.Print("JSON API server runing on port: ", s.listenAddr)
 
 	http.ListenAndServe(s.listenAddr, router)
 }
@@ -65,8 +62,16 @@ func (s *APIServer) handleGetAccountById( w http.ResponseWriter, r *http.Request
 }
 
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
+  createAccountReq := new(CreateAccountRequest)
+  if err := json.NewDecoder(r.Body).Decode(createAccountReq); err != nil {
+    return err
+  }
 
-  return nil
+  account := NewAccount(createAccountReq.FirstName, createAccountReq.LastName)
+  if err := s.storage.CreateAccount(account); err != nil {
+    return err
+  }
+  return WriteJSON(w, http.StatusOK, account)
 }
 
 func (s *APIServer) handleUpdateAccount(w http.ResponseWriter, r *http.Request) error {

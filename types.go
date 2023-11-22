@@ -7,13 +7,18 @@ import (
 	"github.com/google/uuid"
 )
 
+type CreateAccountRequest struct {
+  FirstName string  `json:"firstName"`
+  LastName  string  `json:"lastName"`
+}
+
 type Account struct {
-	ID        uuid.UUID
-	FirstName string
-	LastName  string
-	Number    int
-	Balance   int
-  CreatedAt time.Time
+  ID        uuid.UUID `json:"id"`
+  FirstName string    `json:"firstName"`
+  LastName  string    `json:"lastName"`
+  Number    int       `json:"number"`
+  Balance   int       `json:"balance"`
+  CreatedAt time.Time `json:"createdAt"`
 }
 
 func NewAccount(firstName, lastName string) *Account {

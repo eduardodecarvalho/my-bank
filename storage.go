@@ -35,32 +35,38 @@ func NewPostgresStore() (*PostgresStore, error) {
 }
 
 func (s *PostgresStore) Init() error {
-	return nil
+	return s.CreateAccountTable()
 }
 
 func (s *PostgresStore) CreateAccountTable() error {
 	query := `create table if not exists ACCOUNT (
-    id serial primary key,
+    id varchar(100),
     first_name varchar(50),
     last_name varchar(50),
     number serial,
     balance serial,
-    created_at timestamp,
-  )`
+    created_at timestamp
+  );`
 
 	_, err := s.db.Exec(query)
 	return err
 }
 
 func (s *PostgresStore) CreateAccount(acc *Account) error {
-	query := `inset into ACCOUNT
+	query := `insert into ACCOUNT
   (id, first_name, last_name, balance, number, created_at)
   values
   ($1, $2, $3, $4, $5, $6);
   `
 
   resp, err := s.db.Query(query, 
-    acc.ID, acc.FirstName, acc.LastName, acc.Balance, acc.Number, acc.CreatedAt)
+    acc.ID, 
+    acc.FirstName, 
+    acc.LastName, 
+    acc.Balance, 
+    acc.Number, 
+    acc.CreatedAt,
+  )
 
 	fmt.Println(resp)
 
@@ -81,6 +87,7 @@ func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
 
 func (s *PostgresStore) GetAccounts() ([]*Account, error) {
   rows, err := s.db.Query("select * from account")
+
   if err != nil {
     return nil, err
   }
@@ -88,14 +95,17 @@ func (s *PostgresStore) GetAccounts() ([]*Account, error) {
   accounts := []*Account{}
   for rows.Next() {
     account := new(Account)
-    if err := rows.Scan(&account.ID); err != nil {
+    if err := rows.Scan(&account.ID, &account.FirstName, &account.LastName, 
+      &account.Number, &account.Balance, &account.CreatedAt); err != nil {
       return nil, err
     }
+
     if err != nil {
       return nil, err
     }
     accounts = append(accounts, account)
   }
+
   return accounts, nil
 
 }
